@@ -1,3 +1,7 @@
+/**
+ * @author iceman
+ * Write image data for fimiyaad.com photo gallery.
+ */
 package fimiyaad;
 
 import java.awt.Color;
@@ -16,10 +20,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JTextArea;
 
-/**
- *
- * @author iceman
- */
 public class FimiYaad implements Runnable{
     private static final String HTML_A_HREF_TAG_PATTERN = 
 		"\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";    
