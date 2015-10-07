@@ -6,6 +6,7 @@ package fimiyaad;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -22,7 +23,6 @@ public class Data {
     public Data(){}
          
     public void insert(String qStr){   
-        Object[][] obj = null;
         openDataResource();
         try {
             stm = connection.createStatement();
@@ -33,6 +33,33 @@ public class Data {
         }finally{
             closeDataResource();
         }
+    }
+    
+    public Object[][] getGalleryList(String country){   
+        openDataResource();
+        ResultSet r = null;
+        Object[][] data = null;
+        try {
+            stm = connection.createStatement();
+            r = stm.executeQuery("SELECT * FROM fimiyaad_gallery WHERE country = '" + country + "'");   
+            
+            if(r.last()){ 
+                data = new Object[r.getRow()][3];
+            }
+            
+            r.beforeFirst();
+            int i = 0;
+            while(r.next()){                
+                data[i][0] = r.getString("url"); 
+                data[i][1] = r.getString("img"); 
+                i++;
+            } 
+        } catch (SQLException ex) {
+            Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            closeDataResource();
+        }
+        return data;
     }
     
     private void openDataResource(){

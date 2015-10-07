@@ -1,5 +1,11 @@
+/**
+ * @author iceman
+ * Write image data for fimiyaad.com photo gallery.
+ */
 package fimiyaad;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,41 +18,45 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
-/**
- *
- * @author iceman
- */
-public class FimiYaad{
+public class FimiYaad implements Runnable{
     private static final String HTML_A_HREF_TAG_PATTERN = 
 		"\\s*(?i)href\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";    
     private static final String IMG_SRC_TAG_PATTERN = 
 		"\\s*(?i)src\\s*=\\s*(\"([^\"]*\")|'[^']*'|([^'\">\\s]+))";
+    private final JTextArea mTextArea;
+    private final String endLn = "\n";
+    private Thread t;
     
-    public static void main(String[] args) {
-        new Data().emptyDb();
-        downLoadHtml("pictures.html",    "jamaica");  
-        downLoadHtml("throwback.html",   "jamaica");  
-        downLoadHtml("picturesusa.html", "usa");      
-        downLoadHtml("picturesuk.html",  "uk");      
+    FimiYaad(JTextArea textArea) {
+        mTextArea = textArea;   
+        start();
     }
     
-    public static void downLoadHtml(String section,String country){
+    public void start(){
+        if(t==null){
+            t = new Thread(this);
+            t.start(); 
+        }           
+    }
+    
+    private void downLoadHtml(String section,String country){
         String newUrl = "",newImg = "";
         String queryStr = "";
         String line = "";
         URL url;
         InputStream in = null;
         BufferedReader bReader = null;
+        mTextArea.setForeground(Color.BLUE);
+        mTextArea.append("Preparing for HTML Content\nSection: " + country + "\nLink: " + section + "!!!" + endLn);
         try {
             url = new URL("http://fimiyaad.com/" + section);
             in = url.openStream();
             bReader = new BufferedReader(new InputStreamReader(in));
             
-            System.out.println("Prepare for HTML Content!!!");
-            int i=1;
             while((line = bReader.readLine()) != null){                               
-                //if(line.trim().startsWith("<td width=\"148\">")){   
                 if(line.contains("width=\"150\" height=\"200\"  alt=\"\"")){
                     Pattern p = Pattern.compile(HTML_A_HREF_TAG_PATTERN);
                     Matcher m = p.matcher(line);
@@ -62,29 +72,33 @@ public class FimiYaad{
                     } 
                                       
                     if(is_OK(newUrl)){
-                        System.out.println(newUrl);
+                        mTextArea.setForeground(Color.BLACK);
+                        mTextArea.append(newUrl + endLn);
                         Pattern ip = Pattern.compile(IMG_SRC_TAG_PATTERN);
                         Matcher im = ip.matcher(line);
                         if(im.find()) {
                             newImg = im.group(1).replace("\"", "");   
                         } 
 
-                        queryStr = queryStr.concat("(\""+country+"\", \""+newUrl+"\", \""+newImg+"\"),");
-                        i++;                   
+                        queryStr = queryStr.concat("(\""+country+"\", \""+newUrl+"\", \""+newImg+"\"),");                   
                     }                  
                 }
             } 
             
             new Data().insert(queryStr.concat("END_"));
-            System.out.println("Content INSERTED!!!");
+            mTextArea.append("Content INSERTED!!!" + endLn+endLn);
         } catch (MalformedURLException ex) {
             Logger.getLogger(FimiYaad.class.getName()).log(Level.SEVERE, null, ex);
+            mTextArea.setForeground(Color.RED);
+            mTextArea.append(endLn + ex.getMessage().toUpperCase() + endLn + endLn);
         } catch (IOException ex) {
             Logger.getLogger(FimiYaad.class.getName()).log(Level.SEVERE, null, ex);
+            mTextArea.setForeground(Color.RED);
+            mTextArea.append(endLn + ex.getMessage().toUpperCase() + endLn + endLn);
         }
     }
     
-    private static boolean is_OK(String newUrl) {
+    private boolean is_OK(String newUrl) {
         HttpURLConnection urlConnection = null;
 
         try {
@@ -107,4 +121,14 @@ public class FimiYaad{
         } 
         return false;
     }     
+
+    @Override
+    public void run() {
+        new Data().emptyDb();
+        downLoadHtml("pictures.html",    "jamaica");  
+        downLoadHtml("throwback.html",   "jamaica");  
+        downLoadHtml("picturesusa.html", "usa");      
+        downLoadHtml("picturesuk.html",  "uk" );
+        JOptionPane.showMessageDialog(null, "Task Complete", "Task Complete", JOptionPane.INFORMATION_MESSAGE);
+    }
 }
