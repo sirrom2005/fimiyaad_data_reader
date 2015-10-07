@@ -13,9 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Data {
-    String url = "jdbc:mysql://rohanmorris.com/mobile_apps";
-    String user = "lyn-sys-2015";
-    String pass = "N5ua}%1Zgho$";
+    String url = "";
+    String user = "";
+    String pass = "";
     Connection connection = null;
     boolean rs = false;
     Statement stm = null;
