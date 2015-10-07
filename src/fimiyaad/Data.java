@@ -13,9 +13,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Data {
-    /*String url = "jdbc:mysql://rohanmorris.com/mobile_apps";
-    String user = "lyn-sys-2015";
-    String pass = "N5ua}%1Zgho$";*/
     String url = "jdbc:mysql://localhost:3306/test";
     String user = "root";
     String pass = "pass";
