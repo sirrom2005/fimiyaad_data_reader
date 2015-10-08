@@ -45,7 +45,8 @@ public class FimiYaad implements Runnable{
     private void downLoadHtml(String section,String country){
         String newUrl = "",newImg = "";
         String queryStr = "";
-        String line = "";
+        String tmp, line = "";
+        String[] key = null;
         URL url;
         InputStream in = null;
         BufferedReader bReader = null;
@@ -69,6 +70,8 @@ public class FimiYaad implements Runnable{
                         if(!(newUrl.startsWith("http://0363c6a.netsolhost.com") || newUrl.startsWith("http://fimiyaad.com"))){
                             newUrl = "http://fimiyaad.com/" + newUrl;
                         }
+                        
+                        key = newUrl.split("/");
                     } 
                                       
                     if(is_OK(newUrl)){
@@ -79,11 +82,17 @@ public class FimiYaad implements Runnable{
                         if(im.find()) {
                             newImg = im.group(1).replace("\"", "");   
                         } 
-
-                        queryStr = queryStr.concat("(\""+country+"\", \""+newUrl+"\", \""+newImg+"\"),");                   
+                        
+                        tmp = "(md5(\"" + key[key.length-2] + "\"), \""+country+"\", \""+newUrl+"\", \""+newImg+"\"),";
+                        
+                        if(!queryStr.contains(tmp)){
+                            System.out.println(tmp);
+                            queryStr = queryStr.concat(tmp);
+                        } 
                     }                  
                 }
             } 
+            
             
             new Data().insert(queryStr.concat("END_"));
             mTextArea.append("Content INSERTED!!!" + endLn+endLn);

@@ -13,9 +13,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Data {
+    /*
+    CREATE TABLE `fimiyaad_gallery` (        
+                    `id` int(20) NOT NULL AUTO_INCREMENT,  
+                    `key_` tinytext NOT NULL,              
+                    `country` tinytext NOT NULL,           
+                    `url` tinytext NOT NULL,               
+                    `img` tinytext NOT NULL,               
+                    `date` date DEFAULT NULL,              
+                    PRIMARY KEY (`id`)                     
+                  ) ENGINE=MyISAM DEFAULT CHARSET=latin1 
+    
     String url = "jdbc:mysql://rohanmorris.com/mobile_apps";
     String user = "lyn-sys-2015";
-    String pass = "N5ua}%1Zgho$";
+    String pass = "N5ua}%1Zgho$";*/
+    String url = "jdbc:mysql://localhost:3306/mobile_apps";
+    String user = "root";
+    String pass = "";
     Connection connection = null;
     boolean rs = false;
     Statement stm = null;
@@ -26,7 +40,7 @@ public class Data {
         openDataResource();
         try {
             stm = connection.createStatement();
-            rs = stm.execute("INSERT INTO fimiyaad_gallery (country,url,img) VALUES " + qStr.replace(",END_", ""));
+            rs = stm.execute("INSERT INTO fimiyaad_gallery (key_,country,url,img) VALUES " + qStr.replace(",END_", ""));
             
         } catch (SQLException ex) {
             Logger.getLogger(Data.class.getName()).log(Level.SEVERE, null, ex);
