@@ -25,8 +25,8 @@ public class Data {
                   ) ENGINE=MyISAM DEFAULT CHARSET=latin1 
     
     String url = "jdbc:mysql://rohanmorris.com/mobile_apps";
-    String user = "lyn-sys-2015";
-    String pass = "N5ua}%1Zgho$";*/
+    String user = "DB_USER";
+    String pass = "DB_PASS";*/
     String url = "jdbc:mysql://localhost:3306/mobile_apps";
     String user = "root";
     String pass = "";
